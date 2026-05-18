@@ -25,12 +25,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-n-0c@@kj91f9j-^w$s0@j2r&0tg6n!z_h#&6ue#oimtnf*w-z0'
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-n-0c@@kj91f9j-^w$s0@j2r&0tg6n!z_h#&6ue#oimtnf*w-z0')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
 
 # Application definition
@@ -111,7 +111,9 @@ if 'test' in sys.argv or 'test' in sys.argv[0] or 'pytest' in sys.argv[0]:
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
 LOGIN_URL = '/auth/login/'
+
 LOGIN_REDIRECT_URL = '/accounts/profile/'
+
 LOGOUT_REDIRECT_URL = '/auth/login/'
 
 
