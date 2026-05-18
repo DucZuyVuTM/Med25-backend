@@ -6,8 +6,8 @@ class ReceptionInline(admin.TabularInline):
     model = Reception
     extra = 0
     show_change_link = True
-    fields = ('doctor', 'patient', 'status', 'result')
-    readonly_fields = ('result',)
+    fields = ('doctor', 'patient', 'medical_card', 'clinic_equipment', 'document', 'status')
+    autocomplete_fields = ('doctor', 'patient', 'medical_card', 'clinic_equipment', 'document')
     verbose_name_plural = 'Reception'
 
 

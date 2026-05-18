@@ -18,6 +18,8 @@ from django.contrib import admin
 from django.urls import path, include
 from accounts.views import RegistrationView, HomeView
 
+import med25.admin_widgets
+
 urlpatterns = [
     path('admin/', admin.site.urls),
 
