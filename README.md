@@ -151,7 +151,7 @@ Med25
 1. **Клонировать репозиторий**
 
 ```bash
-git clone https://github.com/DucZuyVuTM/Med25.git
+git clone https://github.com/DucZuyVuTM/Med25-backend.git
 cd Med25
 ```
 
@@ -195,3 +195,27 @@ python manage.py runserver
 ```
 
 Приложение будет доступно по адресу: <http://localhost:8000>
+
+8. **Запуск тестов**
+
+```bash
+python manage.py test
+```
+
+## 📜 Лицензия
+
+Проект разработан в рамках курсовой работы по дисциплине «Проектирование и разработка клиент-серверных приложений».
+
+Автор: **Ву Дык Зуй**
+
+Группа: ИКБО-10-23
+
+Университет: РТУ МИРЭА, 2026
+
+## 🤝 Контакты
+
+По вопросам, связанным с проектом, можно обращаться:
+
+Email: <duczuyvu12@gmail.com>
+
+GitHub: [DucZuyVuTM](https://github.com/DucZuyVuTM)
