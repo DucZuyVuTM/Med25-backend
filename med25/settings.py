@@ -91,6 +91,11 @@ SESSION_COOKIE_SECURE = True
 
 CSRF_COOKIE_SECURE = True
 
+CSRF_TRUSTED_ORIGINS = os.getenv(
+    'CSRF_TRUSTED_ORIGINS',
+    'http://localhost,http://127.0.0.1'
+).split(',')
+
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
