@@ -34,6 +34,10 @@ DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
+USE_X_FORWARDED_HOST = True
+
+FORCE_SCRIPT_NAME = ''
+
 
 # Application definition
 
