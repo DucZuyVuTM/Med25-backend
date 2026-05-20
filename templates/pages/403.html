@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Access Denied - 403{% endblock %}
+
+{% block content %}
+<div class="text-center py-5">
+    <div class="mb-4">
+        <h1 class="display-1 text-danger fw-bold">403</h1>
+    </div>
+    
+    <h2 class="mb-3">⛔ Access Denied</h2>
+    <h5 class="text-muted mb-4">Direct access not allowed</h5>
+    
+    <p class="lead text-muted mb-5">
+        This backend server does not allow direct access.<br>
+        Please access via the public address:
+    </p>
+    
+    <a href="{{ homepage_url }}" class="btn btn-primary btn-lg mb-3">
+        ← Return to Homepage
+    </a>
+    
+    <div class="mt-4">
+        <small class="text-muted">
+            If you are developer, please check the Nginx configuration.
+        </small>
+    </div>
+</div>
+{% endblock %}
