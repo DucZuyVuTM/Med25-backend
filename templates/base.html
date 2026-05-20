@@ -5,6 +5,24 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    {% load static %}
+
+    <!-- Basic Favicon -->
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
+    <link rel="icon" type="image/svg+xml" href="{% static 'images/favicon.svg' %}">
+    
+    <!-- Apple Touch Icon -->
+    <link rel="apple-touch-icon" href="{% static 'images/apple-touch-icon.png' %}">
+    
+    <!-- Other sizes of favicon -->
+    <link rel="icon" type="image/png" sizes="96x96" href="{% static 'images/favicon-96x96.png' %}">
+    
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="{% static 'images/site.webmanifest' %}">
+    
+    <meta name="theme-color" content="#007bff">
+
     <title>{% block title %}Med25{% endblock %} | Med25</title>
     {% bootstrap_css %}
   </head>
