@@ -15,30 +15,109 @@ FUZZ_STRINGS = [
 ]
 
 # Create your tests here.
-class PatientRegistrationFuzzTest(TestCase):
-    """Send unusual data to the patient registration form"""
+class PatientFormFuzzTest(TestCase):
+    """Send unusual data to the patient form"""
     
-    def test_registration_form_with_fuzz_data(self):        
+    def test_registration_form_with_fuzz_data(self):
         url = reverse('registration')
 
         fuzz_payloads = [
+            # === 1. Field username ===
             # Long name
-            {'username': 'a'*10000, 'password1': 'pass', 'password2': 'pass'},
+            {'username': 'a'*151, 'password1': 'pass', 'password2': 'pass', 
+            'email': 'test@example.com', 'first_name': 'John', 'last_name': 'Doe',
+            'phone': '+1234567890', 'address': '123 Main St'},
 
             # Path traversal
-            {'username': '../etc/passwd', 'password1': 'pass', 'password2': 'pass'},
+            {'username': '../etc/passwd', 'password1': 'pass', 'password2': 'pass',
+            'email': 'test@example.com', 'first_name': 'John', 'last_name': 'Doe',
+            'phone': '+1234567890', 'address': '123 Main St'},
 
             # XSS
-            {'username': '<script>alert(1)</script>', 'password1': 'pass', 'password2': 'pass'},
+            {'username': '<script>alert(1)</script>', 'password1': 'pass', 'password2': 'pass',
+            'email': 'test@example.com', 'first_name': 'John', 'last_name': 'Doe',
+            'phone': '+1234567890', 'address': '123 Main St'},
 
             # SQL injection
-            {'username': "' OR '1'='1", 'password1': 'pass', 'password2': 'pass'},
+            {'username': "' OR '1'='1", 'password1': 'pass', 'password2': 'pass',
+            'email': 'test@example.com', 'first_name': 'John', 'last_name': 'Doe',
+            'phone': '+1234567890', 'address': '123 Main St'},
 
+            # === 2. Field password ===
             # Password doesn't match
-            {'username': 'helloworld', 'password1': 'samesame', 'password2': 'different'},
+            {'username': 'helloworld', 'password1': 'samesame', 'password2': 'different',
+            'email': 'test@example.com', 'first_name': 'John', 'last_name': 'Doe',
+            'phone': '+1234567890', 'address': '123 Main St'},
 
-            # Invalid field
-            {'phone': '0357357753'},
+            # Short password
+            {'username': 'user123', 'password1': 'short', 'password2': 'short',
+            'email': 'test@example.com', 'first_name': 'John', 'last_name': 'Doe',
+            'phone': '+1234567890', 'address': '123 Main St'},
+
+            # === 3. Field email ===
+            # Invalid email
+            {'username': 'testuser', 'password1': 'pass', 'password2': 'pass',
+            'email': 'invalid-email', 'first_name': 'John', 'last_name': 'Doe',
+            'phone': '+1234567890', 'address': '123 Main St'},
+
+            # Long email
+            {'username': 'testuser', 'password1': 'pass', 'password2': 'pass',
+            'email': 'a'*100 + '@example.com', 'first_name': 'John', 'last_name': 'Doe',
+            'phone': '+1234567890', 'address': '123 Main St'},
+
+            # === 4. Fields first_name and last_name ===
+            # Long fields
+            {'username': 'testuser', 'password1': 'pass', 'password2': 'pass',
+            'email': 'test@example.com', 'first_name': 'a'*100, 'last_name': 'b'*100,
+            'phone': '+1234567890', 'address': '123 Main St'},
+
+            # Special character
+            {'username': 'testuser', 'password1': 'pass', 'password2': 'pass',
+            'email': 'test@example.com', 'first_name': '<script>', 'last_name': 'Doe',
+            'phone': '+1234567890', 'address': '123 Main St'},
+
+            # === 5. Field phone ===
+            # Invalid phone number
+            {'username': 'testuser', 'password1': 'pass', 'password2': 'pass',
+            'email': 'test@example.com', 'first_name': 'John', 'last_name': 'Doe',
+            'phone': 'invalid_phone', 'address': '123 Main St'},
+
+            # Long phone number
+            {'username': 'testuser', 'password1': 'pass', 'password2': 'pass',
+            'email': 'test@example.com', 'first_name': 'John', 'last_name': 'Doe',
+            'phone': '1'*30, 'address': '123 Main St'},
+
+            # === 6. Field address ===
+            # Long address
+            {'username': 'testuser', 'password1': 'pass', 'password2': 'pass',
+            'email': 'test@example.com', 'first_name': 'John', 'last_name': 'Doe',
+            'phone': '+1234567890', 'address': 'a'*1000},
+
+            # Address with special number
+            {'username': 'testuser', 'password1': 'pass', 'password2': 'pass',
+            'email': 'test@example.com', 'first_name': 'John', 'last_name': 'Doe',
+            'phone': '+1234567890', 'address': '<script>alert(1)</script>'},
+
+            # === 7. Missing required fields ===
+            # Missing username
+            {'password1': 'pass', 'password2': 'pass', 'email': 'test@example.com',
+            'first_name': 'John', 'last_name': 'Doe', 'phone': '+1234567890',
+            'address': '123 Main St'},
+
+            # Missing password
+            {'username': 'testuser', 'email': 'test@example.com',
+            'first_name': 'John', 'last_name': 'Doe', 'phone': '+1234567890',
+            'address': '123 Main St'},
+
+            # Missing phone number
+            {'username': 'testuser', 'password1': 'pass', 'password2': 'pass',
+            'email': 'test@example.com', 'first_name': 'John', 'last_name': 'Doe',
+            'address': '123 Main St'},
+
+            # Missing email
+            {'username': 'testuser', 'password1': 'pass', 'password2': 'pass',
+            'first_name': 'John', 'last_name': 'Doe', 'phone': '+1234567890',
+            'address': '123 Main St'},
         ]
 
         for payload in fuzz_payloads:

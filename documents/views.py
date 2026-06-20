@@ -29,7 +29,7 @@ class DocumentCreateView(LoginRequiredMixin, AdminRequiredMixin, CreateView):
     success_url = reverse_lazy('documents:list')
 
     def form_valid(self, form):
-        form.instance.administrator = self.request.user.administrator_profile
+        form.instance.administrator = self.request.user.employee_profile.administrator_profile
         return super().form_valid(form)
 
 

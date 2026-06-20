@@ -1,6 +1,7 @@
 Django==5.2.13
 django-bootstrap5==26.2
 django-cors-headers==4.9.0
+hypothesis==6.155.6
 psycopg2-binary==2.9.3
 python-dotenv==0.14.0
 uvicorn==0.47.0

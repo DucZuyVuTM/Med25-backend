@@ -20,18 +20,19 @@ class EmailCreateView(LoginRequiredMixin, AdminOrPatientRequiredMixin, View):
     template_name = 'messaging/create.html'
 
     def get_form(self, user):
+        form = forms.Form()
+
         if user.role == 'administrator':
-            form = forms.Form()
             form.fields['patient'] = forms.ModelChoiceField(
                 queryset=CustomUser.objects.filter(role='patient'),
                 label='Patient',
             )
         elif user.role == 'patient':
-            form = forms.Form()
             form.fields['administrator'] = forms.ModelChoiceField(
                 queryset=Administrator.objects.select_related('employee'),
                 label='Administrator',
             )
+
         return form
 
     def get(self, request):

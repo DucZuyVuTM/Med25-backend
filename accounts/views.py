@@ -19,20 +19,6 @@ class RegistrationView(CreateView):
 class ProfileView(LoginRequiredMixin, TemplateView):
     template_name = 'accounts/profile.html'
 
-
-class EditProfileView(LoginRequiredMixin, UpdateView):
-    model = CustomUser
-    fields = ['first_name', 'last_name', 'email']
-    template_name = 'accounts/edit_profile.html'
-    success_url = reverse_lazy('accounts:profile')
-
-    def get_object(self):
-        return self.request.user
-
-
-class ProfileView(LoginRequiredMixin, TemplateView):
-    template_name = 'accounts/profile.html'
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if self.request.user.role == 'doctor':
@@ -54,3 +40,13 @@ class ProfileView(LoginRequiredMixin, TemplateView):
             except Exception:
                 pass
         return redirect('accounts:profile')
+
+
+class EditProfileView(LoginRequiredMixin, UpdateView):
+    model = CustomUser
+    fields = ['first_name', 'last_name', 'email']
+    template_name = 'accounts/edit_profile.html'
+    success_url = reverse_lazy('accounts:profile')
+
+    def get_object(self):
+        return self.request.user
