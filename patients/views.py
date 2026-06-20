@@ -3,26 +3,25 @@ from django.views.generic import ListView, DetailView, TemplateView
 from .models import CustomUser, MedicalCard
 
 # Create your views here.
-class PatientListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
+class AdminOrDoctorRequiredMixin(UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.role in ('administrator', 'doctor')
+
+
+class PatientListView(LoginRequiredMixin, AdminOrDoctorRequiredMixin, ListView):
     model = CustomUser
     template_name = 'patients/list.html'
     context_object_name = 'page_obj'
     paginate_by = 10
 
-    def test_func(self):
-        return self.request.user.role in ('doctor', 'administrator')
-
     def get_queryset(self):
         return CustomUser.objects.filter(role='patient')
 
 
-class PatientDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
+class PatientDetailView(LoginRequiredMixin, AdminOrDoctorRequiredMixin, DetailView):
     model = CustomUser
     template_name = 'patients/detail.html'
     context_object_name = 'patient'
-
-    def test_func(self):
-        return self.request.user.role in ('doctor', 'administrator')
 
 
 class MyCardView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):

@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import CustomUser
+from .models import CustomUser, Doctor
 
 class PatientRegistrationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
@@ -17,3 +17,13 @@ class PatientRegistrationForm(UserCreationForm):
         if commit:
             user.save()
         return user
+
+
+class DoctorProfileForm(forms.ModelForm):
+    class Meta:
+        model = Doctor
+        fields = ['speciality', 'work_experience']
+        widgets = {
+            'speciality': forms.Textarea(attrs={'rows': 5}),
+            'work_experience': forms.Textarea(attrs={'rows': 5}),
+        }

@@ -1,4 +1,5 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import render, redirect
 from django.views import View
 from django.views.generic import ListView, DetailView
@@ -6,10 +7,16 @@ from django.urls import reverse_lazy
 from django import forms
 
 from accounts.models import Administrator, CustomUser
+from .forms import MessageForm
 from .models import Email, Message
 
 # Create your views here.
-class EmailCreateView(LoginRequiredMixin, View):
+class AdminOrPatientRequiredMixin(UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.role in ('administrator', 'patient')
+
+
+class EmailCreateView(LoginRequiredMixin, AdminOrPatientRequiredMixin, View):
     template_name = 'messaging/create.html'
 
     def get_form(self, user):
@@ -63,7 +70,7 @@ class EmailCreateView(LoginRequiredMixin, View):
         return render(request, self.template_name, {'form': self.get_form(user)})
 
 
-class InboxView(LoginRequiredMixin, ListView):
+class InboxView(LoginRequiredMixin, AdminOrPatientRequiredMixin, ListView):
     model = Email
     template_name = 'messaging/inbox.html'
     context_object_name = 'page_obj'
@@ -82,17 +89,27 @@ class InboxView(LoginRequiredMixin, ListView):
         return Email.objects.none()
 
 
-class MessageForm(forms.Form):
-    content = forms.CharField(
-        widget=forms.Textarea(attrs={'rows': 3}),
-        label='Message content'
-    )
-
-
 class ThreadView(LoginRequiredMixin, DetailView):
     model = Email
     template_name = 'messaging/thread.html'
     context_object_name = 'thread'
+
+    def dispatch(self, request, *args, **kwargs):
+        thread = self.get_object()
+        user = request.user
+
+        if user.role == 'patient':
+            if thread.patient != user:
+                raise PermissionDenied("You don't have permission to view this conversation.")
+
+        elif user.role == 'administrator':
+            if thread.administrator.employee.user != user:
+                raise PermissionDenied("You don't have permission to view this conversation.")
+
+        else:
+            raise PermissionDenied("You don't have permission to view this conversation.")
+
+        return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

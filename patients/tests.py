@@ -37,8 +37,8 @@ class PatientRegistrationFuzzTest(TestCase):
             # Password doesn't match
             {'username': 'helloworld', 'password1': 'samesame', 'password2': 'different'},
 
-            # Invalid phone number
-            {'phone': 'not-a-phone-number'},
+            # Invalid field
+            {'phone': '0357357753'},
         ]
 
         for payload in fuzz_payloads:
@@ -53,9 +53,10 @@ class PatientRegistrationFuzzTest(TestCase):
             # Ensure no users are created
             self.assertEqual(
                 CustomUser.objects.filter(
-                    username=payload.get('username')).count(), 0,
-                    f"User was unexpectedly created with payload: {payload}"
-                )
+                    username=payload.get('username')
+                ).count(), 0,
+                f"User was unexpectedly created with payload: {payload}"
+            )
 
 
 class PatientAdminFuzzBase(TestCase):

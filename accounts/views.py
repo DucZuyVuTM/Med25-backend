@@ -1,10 +1,9 @@
-from django import forms
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, TemplateView, UpdateView
-from .forms import PatientRegistrationForm
-from .models import CustomUser, Doctor
+from .forms import PatientRegistrationForm, DoctorProfileForm
+from .models import CustomUser
 
 # Create your views here.
 class HomeView(TemplateView):
@@ -30,15 +29,6 @@ class EditProfileView(LoginRequiredMixin, UpdateView):
     def get_object(self):
         return self.request.user
 
-
-class DoctorProfileForm(forms.ModelForm):
-    class Meta:
-        model = Doctor
-        fields = ['speciality', 'work_experience']
-        widgets = {
-            'speciality': forms.Textarea(attrs={'rows': 5}),
-            'work_experience': forms.Textarea(attrs={'rows': 5}),
-        }
 
 class ProfileView(LoginRequiredMixin, TemplateView):
     template_name = 'accounts/profile.html'

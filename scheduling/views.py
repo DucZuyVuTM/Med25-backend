@@ -1,6 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.views.generic import ListView, DetailView, CreateView
-from django.urls import reverse_lazy
+from django.views.generic import ListView, DetailView
 from .models import Schedule
 
 # Create your views here.
@@ -21,7 +20,21 @@ class ScheduleListView(LoginRequiredMixin, ListView):
         return qs
 
 
-class ScheduleDetailView(LoginRequiredMixin, DetailView):
+class ScheduleDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = Schedule
     template_name = 'scheduling/detail.html'
     context_object_name = 'schedule'
+
+    def test_func(self):
+        user = self.request.user
+        schedule = self.get_object()
+        
+        if user.role == 'administrator':
+            return True
+        elif user.role == 'doctor':
+            # Check if this doctor's reception is on the schedule.
+            return schedule.receptions.filter(doctor__employee__user=user).exists()
+        elif user.role == 'patient':
+            # Check if this patient's reception is on the schedule.
+            return schedule.receptions.filter(patient=user).exists()
+        return False
